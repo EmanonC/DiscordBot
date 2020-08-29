@@ -1,5 +1,5 @@
 class PiPiChecker:
-    wordDic=["pipi","皮皮"]
+    wordDic=["pipi","皮皮","felix","Felix"]
     def __init__(self):
         pass
 

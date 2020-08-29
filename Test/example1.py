@@ -25,6 +25,7 @@ async def on_message(message):
     checker=PiPiChecker()
     if checker.checkContent(content):
         await message.channel.send(PiPiTimmer().getTime(datetime.datetime.now()))
+        await message.channel.send(PiPiTimmer().getSaoHua())
 
     if message.content.startswith('play'):
         user=message.author
