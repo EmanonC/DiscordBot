@@ -7,6 +7,7 @@ import random
 class BBoard:
     def __init__(self):
         self.lastSave=datetime.datetime.now()
+        self.hasSayHello=False
 
     def addComment(self,userID,userName,context):
         comment=BBcomment()
