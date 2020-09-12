@@ -23,12 +23,12 @@ class BBoard:
             self.saveWholeBBoard()
 
     def saveDataTest(self):
-        with open("data/data1.csv", "w") as csvfile:
+        with open("data/data1.csv", "w", encoding='utf-8') as csvfile:
             writer = csv.writer(csvfile)
             writer.writerow(["index", "user_id", "user_name","comment","datetime"])
 
     def saveData(self):
-        with open(self.filePath, "w") as csvfile:
+        with open(self.filePath, "w", encoding='utf-8') as csvfile:
             writer = csv.writer(csvfile)
             writer.writerow(["index", "user_id", "user_name","comment","datetime"])
             writer.writerows(self.getCommentsDataform())
@@ -36,7 +36,7 @@ class BBoard:
     def saveWholeBBoard(self,filename="data/TSData/"+str(datetime.datetime.now().timestamp())+".csv"):
         print("now save ts data")
         self.saveData()
-        with open(filename, "w") as csvfile:
+        with open(filename, "w", encoding='utf-8') as csvfile:
             writer = csv.writer(csvfile)
             writer.writerow(["index", "user_id", "user_name","comment","datetime"])
             writer.writerows(self.getCommentsDataform())

@@ -101,7 +101,7 @@ class PiPiTimmer:
 
     #从goodbyeWords中选出一句骚话
     def getSaoHua(self):
-        filehandle = open("goodbyeWords")
+        filehandle = open("goodbyeWords", encoding="utf8")
         S = (filehandle.readlines())
         filehandle.close()
         words=random.choice(S)
@@ -111,7 +111,7 @@ class PiPiTimmer:
         return words
 
     def getWYY(self):
-        filehandle = open("wangyiyun")
+        filehandle = open("wangyiyun", encoding="utf8")
         S = (filehandle.readlines())
         filehandle.close()
         words = random.choice(S)
@@ -170,5 +170,4 @@ class PiPiTimmer:
 
 # p=PiPiTimmer()
 # print(p.getNextMealTime())
-# p.getTime(datetime.datetime.now())
-# p.getTime(datetime.datetime(2020,8,30,16))
+# print(p.getWYY())
