@@ -9,7 +9,7 @@ class PiPiTimmer:
     #离开上海时间
     leaveSHTime=datetime.datetime(2020,9,6,0,0)
     #结束隔离时间
-    endQuarantineTime=datetime.datetime(2020,9,12,9,0)
+    endQuarantineTime=datetime.datetime(2020,9,12,21,0)
 
 
 
