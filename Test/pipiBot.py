@@ -36,7 +36,7 @@ class PipiBot:
 
             back+=PiPiTimmer().getTime(datetime.datetime.now())+"\n"
             back+=PiPiTimmer().getSaoHua()+"\n"
-            back+=f"有什么想留言的吗？请以 \"comment+留言\" 格式留言，现在已经有{bboard.index}条留言了"+"\n"
+            back+=f"有什么想留言的吗？请以 \"comment+留言\" 格式留言，现在已经有{self.bboard.index}条留言了"+"\n"
             back+="ex: !comment 皮皮虾再见！"
             backTexts.append(back)
 

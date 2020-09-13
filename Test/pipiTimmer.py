@@ -171,7 +171,7 @@ class PiPiTimmer:
         name=random.choice(self.pipiNames)
         back=f"{name}的{mealName}将在{ts}后到达门口。"
 
-        fromEndQuarantine = self.endQuarantineTime - datetime.datetime.now()
+        fromEndQuarantine =  datetime.datetime.now()-self.endQuarantineTime
         timeS = self.getHourMins(fromEndQuarantine)
         back=f"{name}已经处于无人投食状态{timeS}了 \n希望他能在{ts}后按时吃上{mealName}"
         return back
