@@ -9,7 +9,7 @@ class PiPiTimmer:
     #离开上海时间
     leaveSHTime=datetime.datetime(2020,9,6,0,0)
     #结束隔离时间
-    endQuarantineTime=datetime.datetime(2020,8,30,6,2)
+    endQuarantineTime=datetime.datetime(2020,9,12,9,0)
 
 
 
@@ -96,6 +96,12 @@ class PiPiTimmer:
             timeS = self.getHourMins(fromEndQuarantine)
             backs.append(f"{name}还有{timeS}就要结束隔离了")
             backs.append(f"再过{timeS},{name}就会浪变全中国")
+        else:
+            fromEndQuarantine = datetime.datetime.now()-self.endQuarantineTime
+            timeS = self.getHourMins(fromEndQuarantine)
+            backs.append(f"{name}结束隔离{timeS}了，杭州瑟瑟发抖")
+            backs.append(f"{name}浪变全中国的{timeS},为他鼓掌！")
+            backs.append(f"{name}已经被释放了{timeS},猜猜他都干了些啥？")
 
         return random.choice(backs)
 

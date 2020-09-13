@@ -3,11 +3,15 @@ import discord
 from pipicheck import PiPiChecker
 from pipiTimmer import *
 from BulletinBoard import *
+from BotData import BotData
 import re
+import os
 
 client = discord.Client()
 bboard=BBoard()
 hasSayHello=False
+botData=BotData()
+
 
 @client.event
 async def on_ready():
@@ -83,29 +87,62 @@ async def on_message(message):
         bboard.saveWholeBBoard()
 
 
-
     if message.content.startswith('play'):
-        user=message.author
-        print(user.id)
-        print(client.get_user(user.id).name)
-        for channal in client.get_all_channels():
-            if channal.type==discord.ChannelType.voice:
-                print(channal.name)
-                for member in channal.members:
-                    print(member.name)
-                    if (member.name==user.name):
-                        print(channal.name)
-                        print(channal.id)
-                        vc=client.get_channel(channal.id)
-                        print("dsfg",vc)
-                        voiceClient= await  vc.connect()
-                        voiceClient.play(discord.FFmpegPCMAudio('/Users/yilunhuang/Desktop/成都.mp3'))
+        await connectVC(botData,client,message)
+        botData.voiceClient.play(discord.FFmpegPCMAudio('/Users/yilunhuang/Desktop/成都.mp3'))
+
+    if message.content.startswith('!pipinight'):
+        print("in story")
+        await message.channel.send("皮皮虾祝你好梦 \n睡前故事准备中")
+        await connectVC(botData, client, message)
+        path=getNightStoryFilePath()
+        botData.voiceClient.play(discord.FFmpegPCMAudio(path))
+
+    if message.content.startswith('!pipistop'):
+        try:
+            botData.voiceClient.stop()
+        except:
+            pass
+
+
 
 def readFile(filename):
     filehandle = open(filename)
     S= (filehandle.read())
     filehandle.close()
     return S
+
+async def connectVC(botData,client,message):
+    user = message.author
+    print(user.id)
+    print(client.get_user(user.id).name)
+    for channal in client.get_all_channels():
+        if channal.type == discord.ChannelType.voice:
+            print(channal.name)
+            for member in channal.members:
+                print(member.name)
+                if (member.name == user.name):
+                    print(channal.name)
+                    print(channal.id)
+                    if not botData.hasConnectChannel:
+                        botData.vc_id = channal.id
+                        botData.vc = client.get_channel(channal.id)
+                        botData.hasConnectChannel = True
+                        print("dsfg", botData.vc)
+                        botData.voiceClient = await  botData.vc.connect()
+                    elif (channal.id != botData.vc_id):
+                        await botData.voiceClient.disconnect()
+                        botData.vc_id = channal.id
+                        botData.vc = client.get_channel(channal.id)
+                        botData.hasConnectChannel = True
+                        print("dsfg", botData.vc)
+                        botData.voiceClient = await  botData.vc.connect()
+
+def getNightStoryFilePath():
+    filePath="data/NightStory"
+    fileNames=os.listdir(filePath)
+    fileName=random.choice(fileNames)
+    return filePath+'/'+fileName
 
 filename = "../Config/token"
 tokenS=readFile(filename)
