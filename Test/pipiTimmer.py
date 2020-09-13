@@ -100,7 +100,7 @@ class PiPiTimmer:
             fromEndQuarantine = datetime.datetime.now()-self.endQuarantineTime
             timeS = self.getHourMins(fromEndQuarantine)
             backs.append(f"{name}结束隔离{timeS}了，杭州瑟瑟发抖")
-            backs.append(f"{name}浪变全中国的{timeS},为他鼓掌！")
+            backs.append(f"{name}浪遍全中国的{timeS},为他鼓掌！")
             backs.append(f"{name}已经被释放了{timeS},猜猜他都干了些啥？")
 
         return random.choice(backs)
@@ -170,6 +170,10 @@ class PiPiTimmer:
             mealName = "早饭"
         name=random.choice(self.pipiNames)
         back=f"{name}的{mealName}将在{ts}后到达门口。"
+
+        fromEndQuarantine = self.endQuarantineTime - datetime.datetime.now()
+        timeS = self.getHourMins(fromEndQuarantine)
+        back=f"{name}已经处于无人投食状态{timeS}了 \n希望他能在{ts}后按时吃上{mealName}"
         return back
 
 
