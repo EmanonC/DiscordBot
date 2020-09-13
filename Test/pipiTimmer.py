@@ -79,15 +79,15 @@ class PiPiTimmer:
 
         fromArriveSH=datetime.datetime.now()-self.arriveSHTime
         timeS = self.getHourMins(fromArriveSH)
-        backs.append(f"{name}已经在上海吃吃喝喝{timeS}了")
+        # backs.append(f"{name}已经在上海吃吃喝喝{timeS}了")
         backs.append(f"{name}已经抵达上海{timeS}了")
 
-        fromLeaveSH=datetime.datetime.now()-self.leaveSHTime
-        if (fromLeaveSH.days<0):
-            fromLeaveSH =  self.leaveSHTime-datetime.datetime.now()
-            timeS = self.getHourMins(fromLeaveSH)
-            backs.append(f"{name}还有{timeS}就要前往嘉兴了")
-            backs.append(f"{name}在上海吃吃喝喝睡睡的日子还有{timeS}")
+        # fromLeaveSH=datetime.datetime.now()-self.leaveSHTime
+        # if (fromLeaveSH.days<0):
+        #     fromLeaveSH =  self.leaveSHTime-datetime.datetime.now()
+        #     timeS = self.getHourMins(fromLeaveSH)
+            # backs.append(f"{name}还有{timeS}就要前往嘉兴了")
+            # backs.append(f"{name}在上海吃吃喝喝睡睡的日子还有{timeS}")
 
 
         fromEndQuarantine=datetime.datetime.now()-self.endQuarantineTime
