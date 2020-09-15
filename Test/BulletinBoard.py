@@ -52,9 +52,9 @@ class BBoard:
             comment=BBcomment()
             comment.load(data.iloc[i]["index"],data.iloc[i]["user_id"],data.iloc[i]["user_name"],data.iloc[i]["comment"],data.iloc[i]["datetime"])
             self.comments.append(comment)
-        print(f"读评论{len(self.comments)}/{self.index}")
-        for i in self.comments:
-            print(i.readComment())
+        # print(f"读评论{len(self.comments)}/{self.index}")
+        # for i in self.comments:
+        #     print(i.readComment())
 
     def getCommentsDataform(self):
         commentsData=[]
