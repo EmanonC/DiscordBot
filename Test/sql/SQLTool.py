@@ -10,7 +10,7 @@ class sql_helper:
     def __init__(self):
         self.db=declarative_base()
         sqlLine = self.readFile("../Config/sqlconfig")
-        self.engine = create_engine(sqlLine, encoding='utf-8', echo=True)
+        self.engine = create_engine(sqlLine, encoding='utf-8')
         self.DBSession = sessionmaker(bind=self.engine)
         self.db=self.DBSession()
 

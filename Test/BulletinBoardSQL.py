@@ -55,4 +55,5 @@ class BulletinBoardSQL:
         back="评论成功!\n"
         back+=f"您目前有皮币{userCtt['pCoin']}个，皮币用处多多哦\n"
         back+=f"试试!read吧"
+        return back
 

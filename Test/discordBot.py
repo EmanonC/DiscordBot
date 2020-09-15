@@ -56,9 +56,10 @@ async def on_message(message):
         await message.channel.send(pptimmer.getTime(datetime.datetime.now()))
         await message.channel.send(pptimmer.getWYY())
 
-    backText=pipiBot.phraseString(message.content,discord_name,discord_id)
-    if backText!="":
-        await message.channel.send(backText)
+    backTexts=pipiBot.phraseString(message.content,discord_name,discord_id)
+    if len(backTexts)>0:
+        for backText in backTexts:
+            await message.channel.send(backText)
     # if message.content.startswith("!comment"):
     #     user = message.author
     #     print(user.id)

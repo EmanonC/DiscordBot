@@ -19,14 +19,14 @@ class PipiBot:
             backTexts.append(pptimmer.getNextMealTime())
 
         if self.isStartWith("!comment",s):
+            content = s
+            content = content.replace("!comment", "", 1)
+            content = content.strip()
             if self.isDiscord:
-                pass
+                ref=self.bboardsql.addCommentFromDiscord(uid,content)
             else:
-                content = s
-                content = content.replace("!comment", "", 1)
-                content = content.strip()
                 ref=self.bboardsql.addCommentFromWeChat(userName,content)
-                backTexts.append(ref)
+            backTexts.append(ref)
             # UID=uid
             # self.bboard.addComment(UID, userName, content)
             # backTexts.append(f"留言成功！现在已经有{self.bboard.index}条留言了 \n"+"想看看别人的留言吗？试试 \"!read 数字\" \n"+"ex: !read 3 会随机朗读3条留言")
