@@ -1,5 +1,6 @@
 import itchat
-from pipiBot import PipiBot
+# from pipiBot import PipiBot
+from pipiBotSQL import PipiBot
 import os
 import random
 
@@ -19,13 +20,15 @@ def text_reply_group(msg):
     # print(msg.ActualNickName)
     UID = msg["FromUserName"]
     userName=msg.ActualNickName
-    print(msg.text, UID, userName)
-    backs = pipiBot.phraseString(msg.text, userName, UID)
-    print(msg.ActualNickName)
     if msg.ActualNickName=="Potter" or msg.ActualNickName=="":
+        userName="Potter"
         SendUserName=msg.ToUserName
     else:
         SendUserName = msg.FromUserName
+    print(msg.text, UID, userName)
+    backs = pipiBot.phraseString(msg.text, userName, UID)
+    print(backs)
+
     if isStartWith(msg.text,"!music"):
         print("in music")
         r=itchat.send('一首成都送给你', toUserName=SendUserName)
@@ -58,6 +61,7 @@ def getNightStoryFilePath():
     fileName=random.choice(fileNames)
     return filePath+'/'+fileName
 
-pipiBot=PipiBot()
-itchat.auto_login()
+pipiBot=PipiBot(False)
+print("Bot Ready")
+itchat.auto_login(hotReload=True)
 itchat.run()

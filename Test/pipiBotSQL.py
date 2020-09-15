@@ -1,16 +1,16 @@
 from pipicheck import PiPiChecker
 from pipiTimmer import *
 from BulletinBoard import *
+import BulletinBoardSQL
 import re
 
 
 
 class PipiBot:
 
-    def __init__(self):
-        self.bboard = BBoard()
-        self.hasSayHello = False
-        self.bboard.loadData("data/data1.csv")
+    def __init__(self,isDiscord):
+        self.bboardsql = BulletinBoardSQL.BulletinBoardSQL()
+        self.isDiscord=isDiscord
 
     def phraseString(self,s,userName,uid):
         backTexts=[]
@@ -19,12 +19,17 @@ class PipiBot:
             backTexts.append(pptimmer.getNextMealTime())
 
         if self.isStartWith("!comment",s):
-            UID=uid
-            content = s
-            content = content.replace("!comment", "", 1)
-            content = content.strip()
-            self.bboard.addComment(UID, userName, content)
-            backTexts.append(f"留言成功！现在已经有{self.bboard.index}条留言了 \n"+"想看看别人的留言吗？试试 \"!read 数字\" \n"+"ex: !read 3 会随机朗读3条留言")
+            if self.isDiscord:
+                pass
+            else:
+                content = s
+                content = content.replace("!comment", "", 1)
+                content = content.strip()
+                ref=self.bboardsql.addCommentFromWeChat(userName,content)
+                backTexts.append(ref)
+            # UID=uid
+            # self.bboard.addComment(UID, userName, content)
+            # backTexts.append(f"留言成功！现在已经有{self.bboard.index}条留言了 \n"+"想看看别人的留言吗？试试 \"!read 数字\" \n"+"ex: !read 3 会随机朗读3条留言")
 
 
         if self.isStartWith("!pipiwyy", s):
@@ -35,7 +40,7 @@ class PipiBot:
             back=""
             back+=PiPiTimmer().getTime(datetime.datetime.now())+"\n"
             back+=PiPiTimmer().getSaoHua()+"\n"
-            back+=f"有什么想留言的吗？请以 \"comment+留言\" 格式留言，现在已经有{self.bboard.index}条留言了"+"\n"
+            back+=f"有什么想留言的吗？请以 \"comment+留言\" 格式留言，现在已经有{self.bboardsql.getCommentsN()}条留言了"+"\n"
             back+="ex: !comment 皮皮虾再见！"
             backTexts.append(back)
 
@@ -46,14 +51,8 @@ class PipiBot:
             else:
                 num = 1
 
-            comments = self.bboard.readSomeComments(num)
-            back=""
-            for comment in comments:
-                back+=comment+"\n"
-            backTexts.append(back)
+            backTexts.append(self.bboardsql.readSomeComments(num))
 
-        if self.isStartWith("!savedata", s):
-            self.bboard.saveWholeBBoard()
         return backTexts
 
     def isStartWith(self,s,text):

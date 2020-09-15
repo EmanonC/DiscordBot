@@ -16,7 +16,7 @@ class User(Base):
     discord_name=Column(String(127))
     discord_id=Column(String(127))
     wechat_name=Column(String(127))
-    wechat_id=Column(String(127))
+    wechat_id  =Column(String(127))
     #皮币
     p_coin=Column(INTEGER,default=0)
     #皮皮亲密度
@@ -58,6 +58,8 @@ class Comments(Base):
     user_id = Column(INTEGER, ForeignKey('user.id'))
     content = Column(TEXT)
     time = Column(DateTime)
+
+
 
 
 def readFile(filename):

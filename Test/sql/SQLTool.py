@@ -6,10 +6,10 @@ from sql.tool import readFile
 import datetime
 
 class sql_helper:
+
     def __init__(self):
         self.db=declarative_base()
-        sqlLine = readFile("../../Config/sqlconfig")
-        # self.engine = create_engine(sqlLine, encoding='utf-8')
+        sqlLine = self.readFile("../Config/sqlconfig")
         self.engine = create_engine(sqlLine, encoding='utf-8', echo=True)
         self.DBSession = sessionmaker(bind=self.engine)
         self.db=self.DBSession()
@@ -19,7 +19,41 @@ class sql_helper:
         self.db.add(user)
         self.db.commit()
 
-    def addCommentfroDiscord(self,discord_id,content,time):
+    def addWeChatUser(self,wechat_name):
+        user=User(wechat_name=wechat_name)
+        self.db.add(user)
+        self.db.commit()
+
+
+
+    def getWeChatUser(self,nickName):
+        users = self.db.query(User).filter(User.wechat_name == nickName).all()
+        if (len(users) > 0):
+            user = users[0]
+        else:
+            self.addWeChatUser(nickName)
+            users = self.db.query(User).filter(User.wechat_name == nickName).all()
+            user = users[0]
+        return self.phraseUser(user)
+
+    def getDiscordUser(self,discord_id):
+        users = self.db.query(User).filter(User.discord_id == discord_id).all()
+        user = users[0]
+        return self.phraseUser(user)
+
+    def addCommentfromWeChat(self,nickName,content,time):
+        users = self.db.query(User).filter(User.wechat_name ==nickName).all()
+        if (len(users)>0):
+            user=users[0]
+        else:
+            self.addWeChatUser(nickName)
+            users = self.db.query(User).filter(User.wechat_name == nickName).all()
+            user = users[0]
+        comment=Comments(user_id=user.id,content=content,time=time)
+        self.db.add(comment)
+        self.db.commit()
+
+    def addCommentfromDiscord(self,discord_id,content,time):
         users = self.db.query(User).filter(User.discord_id ==discord_id).all()
         user=users[0]
         comment=Comments(user_id=user.id,content=content,time=time)
@@ -28,35 +62,47 @@ class sql_helper:
 
     def getAllComments(self):
         comments=self.db.query(Comments).all()
-        # for comment in comments:
-        #     print(comment.time.timestamp())
+        return [self.phraseComment(comment) for comment in comments]
+
+    def phraseComment(self,comment):
+        user_id=comment.user_id
+        users = self.db.query(User).filter(User.id == user_id).all()
+        user = users[0]
+        ctt={
+            "discord_id":str(user.discord_id),
+            "discord_name":str(user.discord_name),
+            "wechat_name" :str(user.wechat_name),
+            "wechat_id"   :str(user.wechat_id),
+            "comment":str(comment.content),
+            "time":comment.time,
+            # "time":datetime.datetime.strptime(comment.time, '%Y-%m-%d %H:%M:%S.%f'),
+            "pCoin":int(user.p_coin),
+            "pValue":int(user.p_value),
+        }
+        # print(ctt)
+        return ctt
+
+    def phraseUser(self,user):
+        isDiscordUser=user.discord_id!="None"
+        ctt = {
+            "discord_id": str(user.discord_id),
+            "discord_name": str(user.discord_name),
+            "wechat_name": str(user.wechat_name),
+            "wechat_id": str(user.wechat_id),
+            "pCoin": int(user.p_coin),
+            "pValue": int(user.p_value),
+            "isDiscordUser": isDiscordUser,
+        }
+        return ctt
+
+    def readFile(self,filename):
+        filehandle = open(filename)
+        S = (filehandle.read())
+        filehandle.close()
+        return S
 
 
-    # def add_Indeed_Job_herf(self,herf,job_type=None):
-    #     IndeedJob=IndeedJobTable(herf=herf,job_type=job_type)
-    #     self.db.add(IndeedJob)
-    #     self.db.commit()
-    #
-    # def add_Job_Description(self,href,job_name,company_name,requirements):
-    #     JD=JobDescibtion(href=href,job_name=job_name,company_name=company_name)
-    #     self.db.add(JD)
-    #     self.db.flush()
-    #     jid=JD.id
-    #     self.db.commit()
-    #     for r in requirements:
-    #         JRD=JobRequirementDescibtion(job_id=jid,requirement=r)
-    #         self.db.add(JRD)
-    #         self.db.commit()
-    #
-    # def set_indeed_job_is_scrp(self,indeed_job):
-    #     indeed_job.is_scrp=1
-    #     self.db.commit()
-    #
-    # def get_indeed_jobs(self):
-    #     job_hrefs=self.db.query(IndeedJobTable).filter(IndeedJobTable.is_scrp==0).all()
-    #     return job_hrefs
-
-helper=sql_helper()
+# helper=sql_helper()
 # helper.addDiscordUser("112","pixia")
 # helper.addCommentfroDiscord("112","ooo",time=datetime.datetime.now())
-helper.getAllComments()
+# helper.getAllComments()

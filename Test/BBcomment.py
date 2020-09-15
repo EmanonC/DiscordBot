@@ -5,7 +5,8 @@ class BBcomment:
         self.userID=userID
         self.userName=userName
         self.context=context
-        self.datetime=datetime.datetime.strptime(datetime1,"%Y-%m-%d %H:%M:%S.%f")
+        self.datetime=datetime1
+        # self.datetime=datetime.datetime.strptime(datetime1,"%Y-%m-%d %H:%M:%S.%f")
 
     def makeComment(self,index,userID,userName,context):
         self.index = index
