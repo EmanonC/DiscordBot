@@ -44,7 +44,7 @@ class PManagerWechat():
             self.sqlHelper.updatePiFood(food.id,eat_time=time)
             user=self.sqlHelper.getUser(food.user_id)
             lName=""
-            if (user.discord_name!=""):
+            if (user.discord_name!="None"):
                 lName=user.discord_name
             else:
                 lName=user.wechat_name
