@@ -42,7 +42,7 @@ class BulletinBoardSQL:
     def addCommentFromWeChat(self,nickName,context):
         currentTime=datetime.datetime.now()
         self.sqlHelper.addCommentfromWeChat(nickName,context,currentTime)
-        userCtt=self.sqlHelper.getWeChatUser(nickName)
+        userCtt,usql=self.sqlHelper.getWeChatUser(nickName)
         back="评论成功!\n"
         back+=f"您目前有皮币{userCtt['pCoin']}个，皮币用处多多哦\n"
         back+=f"试试!read吧"
@@ -51,7 +51,7 @@ class BulletinBoardSQL:
     def addCommentFromDiscord(self,discord_id,context):
         currentTime=datetime.datetime.now()
         self.sqlHelper.addCommentfromDiscord(discord_id,context,currentTime)
-        userCtt=self.sqlHelper.getDiscordUser(discord_id)
+        userCtt,usql=self.sqlHelper.getDiscordUser(discord_id)
         back="评论成功!\n"
         back+=f"您目前有皮币{userCtt['pCoin']}个，皮币用处多多哦\n"
         back+=f"试试!read吧"

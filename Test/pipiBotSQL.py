@@ -1,9 +1,12 @@
 from pipicheck import PiPiChecker
 from pipiTimmer import *
 from BulletinBoard import *
+from PCoin.PManagerDiscord import PManagerDiscord
+from PCoin.PManagerWechat import PManagerWechat
 import BulletinBoardSQL
 import re
-
+import random
+from Tools.userChecker import userChecker
 
 
 class PipiBot:
@@ -11,6 +14,10 @@ class PipiBot:
     def __init__(self,isDiscord):
         self.bboardsql = BulletinBoardSQL.BulletinBoardSQL()
         self.isDiscord=isDiscord
+        if self.isDiscord:
+            self.pManagerDiscord=PManagerDiscord()
+        else:
+            self.pManagerWechat=PManagerWechat()
 
     def phraseString(self,s,userName,uid):
         backTexts=[]
@@ -23,13 +30,12 @@ class PipiBot:
             content = content.replace("!comment", "", 1)
             content = content.strip()
             if self.isDiscord:
+                self.pManagerDiscord.updatePCoin(id=uid,changeValue=random.randint(1,10),remark="Comment",time=datetime.datetime.now())
                 ref=self.bboardsql.addCommentFromDiscord(uid,content)
             else:
+                self.pManagerWechat.updatePCoin(nickName=userName,changeValue=random.randint(1,10),remark="Comment",time=datetime.datetime.now())
                 ref=self.bboardsql.addCommentFromWeChat(userName,content)
             backTexts.append(ref)
-            # UID=uid
-            # self.bboard.addComment(UID, userName, content)
-            # backTexts.append(f"留言成功！现在已经有{self.bboard.index}条留言了 \n"+"想看看别人的留言吗？试试 \"!read 数字\" \n"+"ex: !read 3 会随机朗读3条留言")
 
 
         if self.isStartWith("!pipiwyy", s):
@@ -52,6 +58,27 @@ class PipiBot:
                 num = 1
 
             backTexts.append(self.bboardsql.readSomeComments(num))
+
+        if self.isStartWith("!feed",s):
+            foodName=s.split("!feed")[1]
+            if (len(foodName)>0):
+                if self.isDiscord:
+                    ref=self.pManagerDiscord.feedPiPi(id=uid,foodName=foodName,time=datetime.datetime.now())
+                else:
+                    ref=self.pManagerWechat.feedPiPi(nickName=userName,foodName=foodName,time=datetime.datetime.now())
+                backTexts.append(ref)
+
+        if self.isStartWith("!enjoymeal",s):
+            if self.isDiscord:
+                if(userChecker().checkPiPi(discord_id=uid)):
+                    ref=self.pManagerDiscord.eatAllFood(datetime.datetime.now())
+                    backTexts.append(ref)
+            else:
+                if (userChecker().checkPiPi(userName=userName)):
+                    ref=self.pManagerWechat.eatAllFood(datetime.datetime.now())
+                    backTexts.append(ref)
+
+
 
         return backTexts
 

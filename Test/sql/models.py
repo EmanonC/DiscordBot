@@ -24,7 +24,10 @@ class User(Base):
 
     mentions = relationship("MentionPiTable", backref="user")
     pCoinLogs = relationship("PiCoinLog", backref="user")
+    pValueLogs = relationship("PiValueLog", backref="user")
     comments= relationship("Comments", backref="user")
+    pLogs=relationship("PiLog",backref="user")
+    pFoods=relationship("PiFood",backref="user")
 
 class MentionPiTable(Base):
     __tablename__ = 'mention_pi_table'
@@ -48,6 +51,42 @@ class PiCoinLog(Base):
     time = Column(DateTime)
     note = Column(String(127))
 
+class PiValueLog(Base):
+    __tablename__ = 'pi_value_log'
+    __table_args__ = {
+        "mysql_charset": "utf8"
+    }
+    id = Column(INTEGER, primary_key=True, autoincrement=True)
+    user_id = Column(INTEGER, ForeignKey('user.id'))
+    p_value_change = Column(INTEGER, default=0)
+    time = Column(DateTime)
+    remark = Column(String(127))
+
+class PiLog(Base):
+    __tablename__ = 'pi_log'
+    __table_args__ = {
+        "mysql_charset": "utf8"
+    }
+    id = Column(INTEGER, primary_key=True, autoincrement=True)
+    user_id = Column(INTEGER, ForeignKey('user.id'))
+    action=Column(String(127))
+    time = Column(DateTime)
+    remark = Column(String(127))
+
+
+class PiFood(Base):
+    __tablename__ = 'pi_food'
+    __table_args__ = {
+        "mysql_charset": "utf8"
+    }
+    id = Column(INTEGER, primary_key=True, autoincrement=True)
+    user_id = Column(INTEGER, ForeignKey('user.id'))
+    food_name = Column(String(127))
+    time = Column(DateTime)
+    eat_time = Column(DateTime)
+    remark = Column(String(127))
+    has_eat=Column(INTEGER)
+
 
 class Comments(Base):
     __tablename__ = 'comments'
@@ -70,6 +109,6 @@ def readFile(filename):
 
 if __name__ == '__main__':
     sqlLine=readFile("../../Config/sqlconfig")
-    engine=create_engine(sqlLine, encoding='utf-8',echo=True)
+    engine=create_engine(sqlLine, encoding='utf-8')
     DBSession = sessionmaker(bind=engine)
     Base.metadata.create_all(engine)

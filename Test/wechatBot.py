@@ -20,7 +20,7 @@ def text_reply_group(msg):
     # print(msg.ActualNickName)
     UID = msg["FromUserName"]
     userName=msg.ActualNickName
-    if msg.ActualNickName=="Potter" or msg.ActualNickName=="":
+    if msg.ActualNickName in ["Potter","皮皮皮"]  or msg.ActualNickName=="":
         userName="Potter"
         SendUserName=msg.ToUserName
     else:

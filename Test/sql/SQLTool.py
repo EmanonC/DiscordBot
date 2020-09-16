@@ -10,6 +10,7 @@ class sql_helper:
     def __init__(self):
         self.db=declarative_base()
         sqlLine = self.readFile("../Config/sqlconfig")
+        # sqlLine = self.readFile("../../Config/sqlconfig")
         self.engine = create_engine(sqlLine, encoding='utf-8')
         self.DBSession = sessionmaker(bind=self.engine)
         self.db=self.DBSession()
@@ -24,7 +25,43 @@ class sql_helper:
         self.db.add(user)
         self.db.commit()
 
+    def updatePCoin(self,uid,changeValue,remark,time):
+        log=PiCoinLog(user_id=uid,p_coin_change=changeValue,time=time,note=remark)
+        self.db.add(log)
+        self.db.commit()
+        user = self.db.query(User).filter(User.id == uid).all()[0]
+        user.p_coin+=changeValue
+        self.db.commit()
 
+    def updatePValue(self,uid,changeValue,remark,time):
+        log=PiValueLog(user_id=uid,p_value_change=changeValue,time=time,remark=remark)
+        self.db.add(log)
+        self.db.commit()
+        user = self.db.query(User).filter(User.id == uid).all()[0]
+        user.p_value+=changeValue
+        self.db.commit()
+
+    def insertPLog(self,uid,action,remark,time):
+        log=PiLog(user_id=uid,action=action,time=time,remark=remark)
+        self.db.add(log)
+        self.db.commit()
+
+    def insertPiFood(self,uid,foodName,time,remark=""):
+        log=PiFood(user_id=uid,food_name=foodName,time=time,remark=remark,has_eat=0)
+        self.db.add(log)
+        self.db.commit()
+
+    def updatePiFood(self,foodID,eat_time,remark=""):
+        food=self.db.query(PiFood).filter(PiFood.id==foodID).all()[0]
+        if remark!="":
+            food.remark=remark
+        food.eat_time=eat_time
+        food.has_eat=1
+        self.db.commit()
+
+    def getUneatFood(self):
+        foods = self.db.query(PiFood).filter(PiFood.has_eat == 0).all()
+        return foods
 
     def getWeChatUser(self,nickName):
         users = self.db.query(User).filter(User.wechat_name == nickName).all()
@@ -34,12 +71,16 @@ class sql_helper:
             self.addWeChatUser(nickName)
             users = self.db.query(User).filter(User.wechat_name == nickName).all()
             user = users[0]
-        return self.phraseUser(user)
+        return self.phraseUser(user),user
+
+    def getUser(self,uid):
+        user = self.db.query(User).filter(User.id==uid).all()[0]
+        return user
 
     def getDiscordUser(self,discord_id):
         users = self.db.query(User).filter(User.discord_id == discord_id).all()
         user = users[0]
-        return self.phraseUser(user)
+        return self.phraseUser(user),user
 
     def addCommentfromWeChat(self,nickName,content,time):
         users = self.db.query(User).filter(User.wechat_name ==nickName).all()
@@ -101,8 +142,7 @@ class sql_helper:
         filehandle.close()
         return S
 
-
-# helper=sql_helper()
-# helper.addDiscordUser("112","pixia")
-# helper.addCommentfroDiscord("112","ooo",time=datetime.datetime.now())
-# helper.getAllComments()
+if __name__ == '__main__':
+    helper=sql_helper()
+    helper.addDiscordUser("134","xia")
+    helper.updatePCoin(1,10,"哈哈",datetime.datetime.now())
