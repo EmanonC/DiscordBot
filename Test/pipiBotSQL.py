@@ -19,6 +19,13 @@ class PipiBot:
         else:
             self.pManagerWechat=PManagerWechat()
 
+    def reInit(self):
+        self.bboardsql = BulletinBoardSQL.BulletinBoardSQL()
+        if self.isDiscord:
+            self.pManagerDiscord=PManagerDiscord()
+        else:
+            self.pManagerWechat=PManagerWechat()
+
     def phraseString(self,s,userName,uid):
         backTexts=[]
         if self.isStartWith("!pipimeal",s):

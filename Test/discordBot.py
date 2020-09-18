@@ -51,41 +51,14 @@ async def on_message(message):
             await message.channel.send(f"有什么想留言的吗？请以 \"comment+留言\" 格式留言，现在已经有{bboard.index}条留言了")
             await message.channel.send("ex: !comment 皮皮虾再见！")
 
-    if message.content.startswith("!pipiwyy"):
-        pptimmer=PiPiTimmer()
-        await message.channel.send(pptimmer.getTime(datetime.datetime.now()))
-        await message.channel.send(pptimmer.getWYY())
-
-    backTexts=pipiBot.phraseString(message.content,discord_name,discord_id)
-    if len(backTexts)>0:
-        for backText in backTexts:
-            await message.channel.send(backText)
-    # if message.content.startswith("!comment"):
-    #     user = message.author
-    #     print(user.id)
-    #     print(client.get_user(user.id).name)
-    #     content = message.content
-    #     content=content.replace("!comment","",1)
-    #     content=content.strip()
-    #     bboard.addComment(user.id,user.name,content)
-    #     await message.channel.send(f"留言成功！现在已经有{bboard.index}条留言了")
-    #     await message.channel.send("想看看别人的留言吗？试试 \"!read 数字\"")
-    #     await message.channel.send("ex: !read 3 会随机朗读3条留言")
-    #
-    # if message.content.startswith("!pipimeal"):
-    #     pptimmer=PiPiTimmer()
-    #     await message.channel.send(pptimmer.getNextMealTime())
-    #
-    # if message.content.startswith("!read"):
-    #     num=re.findall(r"\d+",message.content)
-    #     if (len(num)>0):
-    #         num=int(num[0])
-    #     else:
-    #         num=1
-    #
-    #     comments=bboard.readSomeComments(num)
-    #     for comment in comments:
-    #         await message.channel.send(comment)
+    try:
+        backTexts=pipiBot.phraseString(message.content,discord_name,discord_id)
+        if len(backTexts)>0:
+            for backText in backTexts:
+                await message.channel.send(backText)
+    except:
+        pipiBot.reInit()
+        await message.channel.send("sql server error")
 
 
 
