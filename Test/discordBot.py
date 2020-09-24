@@ -8,9 +8,9 @@ import re
 import os
 
 client = discord.Client()
-bboard=BBoard()
-hasSayHello=False
-botData=BotData()
+bboard = BBoard()
+hasSayHello = False
+botData = BotData()
 
 
 @client.event
@@ -26,24 +26,26 @@ async def on_ready():
     #
     # print("=========")
 
+
 @client.event
 async def on_message(message):
     if message.author == client.user:
         return
 
     user = message.author
-    discord_id=user.id
-    discord_name=client.get_user(user.id).name
+    discord_id = user.id
+    discord_name = client.get_user(user.id).name
 
     if message.content.startswith('$hello'):
         await message.channel.send('hello my friend')
 
-    if ((str(message.author.id)=="226151279855009792" or client.get_user(message.author.id).name=="Soyoungsonaive") and not bboard.hasSayHello):
+    if ((str(message.author.id) == "226151279855009792" or client.get_user(
+            message.author.id).name == "Soyoungsonaive") and not bboard.hasSayHello):
         bboard.hasSayHello = True
         await message.channel.send("皮皮虾你好！欢迎回来！")
 
-    content=message.content
-    checker=PiPiChecker()
+    content = message.content
+    checker = PiPiChecker()
     if checker.checkContent(content):
         if (not message.content.startswith("!")):
             await message.channel.send(PiPiTimmer().getTime(datetime.datetime.now()))
@@ -52,24 +54,31 @@ async def on_message(message):
             await message.channel.send("ex: !comment 皮皮虾再见！")
 
     try:
-        backTexts=pipiBot.phraseString(message.content,discord_name,discord_id)
-        if len(backTexts)>0:
+        backTexts = pipiBot.phraseString(message.content, discord_name, discord_id)
+        if len(backTexts) > 0:
             for backText in backTexts:
                 await message.channel.send(backText)
     except:
-        pipiBot.reInit()
         await message.channel.send("sql server error")
-
-
+        pipiBot.reInit()
+        await message.channel.send("sql server back")
+        try:
+            backTexts = pipiBot.phraseString(message.content, discord_name, discord_id)
+            if len(backTexts) > 0:
+                for backText in backTexts:
+                    await message.channel.send(backText)
+        except:
+            pipiBot.reInit()
+            await message.channel.send("sql server error")
 
     if message.content.startswith('play'):
-        await connectVC(botData,client,message)
+        await connectVC(botData, client, message)
         botData.voiceClient.play(discord.FFmpegPCMAudio('/Users/yilunhuang/Desktop/成都.mp3'))
 
     if message.content.startswith('!pipinight'):
         await message.channel.send("皮皮虾祝你好梦 \n睡前故事准备中")
         await connectVC(botData, client, message)
-        path=getNightStoryFilePath()
+        path = getNightStoryFilePath()
         botData.voiceClient.play(discord.FFmpegPCMAudio(path))
 
     if message.content.startswith('!pipistop'):
@@ -79,14 +88,14 @@ async def on_message(message):
             pass
 
 
-
 def readFile(filename):
     filehandle = open(filename)
-    S= (filehandle.read())
+    S = (filehandle.read())
     filehandle.close()
     return S
 
-async def connectVC(botData,client,message):
+
+async def connectVC(botData, client, message):
     user = message.author
     print(user.id)
     print(client.get_user(user.id).name)
@@ -112,16 +121,18 @@ async def connectVC(botData,client,message):
                         print("dsfg", botData.vc)
                         botData.voiceClient = await  botData.vc.connect()
 
+
 def getNightStoryFilePath():
-    filePath="data/NightStory"
-    fileNames=os.listdir(filePath)
-    fileName=random.choice(fileNames)
-    return filePath+'/'+fileName
+    filePath = "data/NightStory"
+    fileNames = os.listdir(filePath)
+    fileName = random.choice(fileNames)
+    return filePath + '/' + fileName
+
 
 if __name__ == '__main__':
-    pipiBot=PipiBot(True)
+    pipiBot = PipiBot(True)
     print("Bot Ready")
     filename = "../Config/token"
-    tokenS=readFile(filename)
+    tokenS = readFile(filename)
 
     client.run(tokenS)
